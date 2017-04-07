@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -94,6 +95,10 @@ public class ShotFragment extends Fragment {
             progressBar = (ProgressBar) linearLayout.findViewById(R.id.progress_bar);
             final int mColumnCount = getResources().getInteger(R.integer.shot_columns);
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+//            DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+//                    mLayoutManager.getOrientation());
+//            recyclerView.addItemDecoration(mDividerItemDecoration);
+
             new RestTask().execute("https://api.kamcord.com/v1/feed/ZmVlZElkPWZlZWRfZmVhdHVyZWRfc2hvdCZ1c2VySWQmdG9waWNJZCZzdHJlYW1TZXNzaW9uSWQmbGFuZ3VhZ2VDb2Rl?count=20&page=00.FEATURED_SHOTS.subfeed_featured_shots.00.00");
 //            if (mColumnCount <= 1) {
 //                recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -261,7 +266,9 @@ public class ShotFragment extends Fragment {
                     JSONObject card = (JSONObject) cards.get(i);
                     JSONObject shotCardData = (JSONObject) card.getJSONObject("shotCardData");
                     JSONObject shotThumbnail = (JSONObject) shotCardData.getJSONObject("shotThumbnail");
-                    URL url = new URL(shotThumbnail.getString("small"));
+                    String actualAddress =shotThumbnail.getString("small");
+                    actualAddress = actualAddress.replaceAll("MOvyVys8kAi",shotCardData.getString("id"));
+                    URL url = new URL(actualAddress);
                     Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                     ids.add(new Shot((String) shotCardData.get("id"), bmp, ""));
                     Log.d(TAG, "JSON SUCCESS " + shotCardData.get("id"));

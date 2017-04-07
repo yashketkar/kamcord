@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yashketkar.kamcorddiscover.ShotFragment.OnListFragmentInteractionListener;
@@ -36,7 +37,9 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
+//        holder.mIdView.setText(mValues.get(position).id);
+        holder.mThumbView.setImageBitmap(mValues.get(position).content);
+
 //        holder.mContentView.setText(mValues.get(position).content);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -58,18 +61,20 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
+//        public final TextView mIdView;
+        public final ImageView mThumbView;
         public Shot mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
+//            mIdView = (TextView) view.findViewById(R.id.id);
+            mThumbView = (ImageView) view.findViewById(R.id.thumb_image);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mIdView.getText() + "'";
+            return (super.toString() + " '" /*+mIdView.getText()*/ + "'");
         }
     }
 }
