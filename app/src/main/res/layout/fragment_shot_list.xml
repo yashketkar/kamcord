@@ -22,10 +22,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:visibility="gone"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.yashketkar.kamcorddiscover.ShotFragment"
         tools:listitem="@layout/fragment_shot" />

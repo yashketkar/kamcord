@@ -10,12 +10,12 @@ public class Shot {
 
     public final String id;
     public final Bitmap content;
-    public final String details;
+    public final String playurl;
 
-    public Shot(String id, Bitmap content, String details) {
+    public Shot(String id, Bitmap content, String playurl) {
         this.id = id;
         this.content = content;
-        this.details = details;
+        this.playurl = playurl;
     }
 
     @Override

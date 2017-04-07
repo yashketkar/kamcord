@@ -6,9 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.yashketkar.kamcorddiscover.dummy.DummyContent;
-import com.yashketkar.kamcorddiscover.dummy.DummyContent.DummyItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -270,7 +266,8 @@ public class ShotFragment extends Fragment {
                     actualAddress = actualAddress.replaceAll("MOvyVys8kAi",shotCardData.getString("id"));
                     URL url = new URL(actualAddress);
                     Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    ids.add(new Shot((String) shotCardData.get("id"), bmp, ""));
+                    JSONObject play = shotCardData.getJSONObject("play");
+                    ids.add(new Shot((String) shotCardData.get("id"), bmp, play.getString("mp4")));
                     Log.d(TAG, "JSON SUCCESS " + shotCardData.get("id"));
                 }
             }
