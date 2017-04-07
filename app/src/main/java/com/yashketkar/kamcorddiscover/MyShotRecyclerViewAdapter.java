@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Shot} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecyclerViewAdapter.ViewHolder> {
 
@@ -36,9 +35,6 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
         holder.mItem = mValues.get(position);
 //        holder.mIdView.setText(mValues.get(position).id);
         holder.mThumbView.setImageBitmap(mValues.get(position).content);
-
-//        holder.mContentView.setText(mValues.get(position).content);
-
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

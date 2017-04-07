@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,8 +23,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,10 +39,6 @@ import static android.content.ContentValues.TAG;
  */
 public class ShotFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-//    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-//    private int mColumnCount = 3;
     private OnListFragmentInteractionListener mListener;
     private JSONObject jsonResult;
     private RecyclerView recyclerView;
@@ -58,12 +51,10 @@ public class ShotFragment extends Fragment {
     public ShotFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static ShotFragment newInstance(int columnCount) {
         ShotFragment fragment = new ShotFragment();
         Bundle args = new Bundle();
-//        args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,10 +62,6 @@ public class ShotFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-//            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -85,23 +72,12 @@ public class ShotFragment extends Fragment {
         // Set the adapter
         if (view instanceof LinearLayout) {
             Context context = view.getContext();
-//            recyclerView = (RecyclerView) view;
             LinearLayout linearLayout = (LinearLayout)view;
             recyclerView =  (RecyclerView) linearLayout.findViewById(R.id.recycler_view); //(RecyclerView) view;
             progressBar = (ProgressBar) linearLayout.findViewById(R.id.progress_bar);
             final int mColumnCount = getResources().getInteger(R.integer.shot_columns);
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-//            DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-//                    mLayoutManager.getOrientation());
-//            recyclerView.addItemDecoration(mDividerItemDecoration);
-
             new RestTask().execute("https://api.kamcord.com/v1/feed/ZmVlZElkPWZlZWRfZmVhdHVyZWRfc2hvdCZ1c2VySWQmdG9waWNJZCZzdHJlYW1TZXNzaW9uSWQmbGFuZ3VhZ2VDb2Rl?count=20&page=00.FEATURED_SHOTS.subfeed_featured_shots.00.00");
-//            if (mColumnCount <= 1) {
-//                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-//            } else {
-//                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-//            }
-            //recyclerView.setAdapter(new MyShotRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }
         return view;
     }
@@ -135,18 +111,11 @@ public class ShotFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Shot item);
     }
 
 
     private class RestTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            // start loading animation maybe?
-            //adapter.clear(); // clear "old" entries (optional)
-        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -161,41 +130,13 @@ public class ShotFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             //Here you are done with the task
-//            Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
             new ImagesTask().execute(result);
-//            List<Shot> ids = new ArrayList<Shot>();
-//            try {
-//                jsonResult = new JSONObject(result);
-//                JSONArray cards = jsonResult.getJSONArray("cards");
-//                for(int i=0;i<cards.length();i++) {
-//                    JSONObject card = (JSONObject) cards.get(i);
-//                    JSONObject shotCardData = (JSONObject) card.getJSONObject("shotCardData");
-//                    URL url = new URL("http://image10.bizrate-images.com/resize?sq=60&uid=2216744464");
-//                    Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//                    ids.add(new Shot((String)shotCardData.get("id"),bmp,""));
-//                    Log.d(TAG, "JSON SUCCESS " + shotCardData.get("id"));
-//                }
-//                recyclerView.setAdapter(new MyShotRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-//                mRecyclerAdapter.setData(mData); // need to implement setter method for data in adapter
-//                mRecyclerAdapter.notifyDataSetChanged();
-//            }
-//            catch (JSONException je){
-//                Log.d(TAG, "JSON EXCEPTION " + je);
-//            }
-//            catch(MalformedURLException me){
-//                Log.d(TAG, "Malformed URL EXCEPTION " + me);
-//            }
-//            catch(IOException ioe){
-//                Log.d(TAG, "IO EXCEPTION " + ioe);
-//            }
         }
 
     }
 
     private String downloadContent(String myurl) throws IOException {
         InputStream is = null;
-        int length = 500;
-
         try {
             URL url = new URL(myurl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -210,22 +151,14 @@ public class ShotFragment extends Fragment {
             conn.connect();
             int response = conn.getResponseCode();
             Log.d(TAG, "The response is: " + response);
-            String message = conn.getResponseMessage();
-
             is = conn.getInputStream();
-            length = conn.getHeaderFieldInt("content-Length",100);
-
-            //InputStream in = address.openStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             StringBuilder result = new StringBuilder();
             String line;
             while((line = reader.readLine()) != null) {
                 result.append(line);
             }
-//            System.out.println(result.toString());
-
             // Convert the InputStream into a string
-            String contentAsString = convertInputStreamToString(is, length);
             return result.toString();
         } finally {
             if (is != null) {
@@ -234,22 +167,7 @@ public class ShotFragment extends Fragment {
         }
     }
 
-    public String convertInputStreamToString(InputStream stream, int length) throws IOException, UnsupportedEncodingException {
-        Reader reader = null;
-        reader = new InputStreamReader(stream, "UTF-8");
-        char[] buffer = new char[length];
-        reader.read(buffer);
-        return new String(buffer);
-    }
-
-
     private class ImagesTask extends AsyncTask<String, Void, List<Shot>> {
-
-        @Override
-        protected void onPreExecute() {
-            // start loading animation maybe?
-            //adapter.clear(); // clear "old" entries (optional)
-        }
 
         @Override
         protected List<Shot> doInBackground(String... params) {
@@ -260,8 +178,8 @@ public class ShotFragment extends Fragment {
                 JSONArray cards = jsonResult.getJSONArray("cards");
                 for (int i = 0; i < cards.length(); i++) {
                     JSONObject card = (JSONObject) cards.get(i);
-                    JSONObject shotCardData = (JSONObject) card.getJSONObject("shotCardData");
-                    JSONObject shotThumbnail = (JSONObject) shotCardData.getJSONObject("shotThumbnail");
+                    JSONObject shotCardData = card.getJSONObject("shotCardData");
+                    JSONObject shotThumbnail = shotCardData.getJSONObject("shotThumbnail");
                     String actualAddress =shotThumbnail.getString("small");
                     actualAddress = actualAddress.replaceAll("MOvyVys8kAi",shotCardData.getString("id"));
                     URL url = new URL(actualAddress);
@@ -285,13 +203,9 @@ public class ShotFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Shot> result) {
-            //Here you are done with the task
-//            Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
             recyclerView.setAdapter(new MyShotRecyclerViewAdapter(result, mListener));
             recyclerView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         }
-
     }
-
 }

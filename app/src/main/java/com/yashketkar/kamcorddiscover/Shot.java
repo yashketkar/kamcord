@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 /**
  * Created by yashketkar on 4/6/17.
+ *
  */
 
 public class Shot {

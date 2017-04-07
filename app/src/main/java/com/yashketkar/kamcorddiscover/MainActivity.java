@@ -1,5 +1,6 @@
 package com.yashketkar.kamcorddiscover;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,7 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+
 public class MainActivity extends AppCompatActivity implements ShotFragment.OnListFragmentInteractionListener {
+
+    public static final String EXTRA_MESSAGE = "com.yashketkar.kamcorddiscover.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +31,6 @@ public class MainActivity extends AppCompatActivity implements ShotFragment.OnLi
                         .setAction("Action", null).show();
             }
         });
-        //new RestTask().execute("https://api.staging.kamcord.com/v1/feed/set/featuredShots?count=20");
-        //new RestTask().execute("https://api.kamcord.com/v1/feed/ZmVlZElkPWZlZWRfZmVhdHVyZWRfc2hvdCZ1c2VySWQmdG9waWNJZCZzdHJlYW1TZXNzaW9uSWQmbGFuZ3VhZ2VDb2Rl?count=20&page=00.FEATURED_SHOTS.subfeed_featured_shots.00.00");
     }
 
     @Override
@@ -55,7 +57,10 @@ public class MainActivity extends AppCompatActivity implements ShotFragment.OnLi
 
     @Override
     public void onListFragmentInteraction(Shot item) {
-        Toast.makeText(MainActivity.this, item.id, Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, item.playurl, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, VideoActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, item.playurl);
+        startActivity(intent);
     }
 
 
