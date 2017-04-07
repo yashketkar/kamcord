@@ -3,6 +3,7 @@ package com.yashketkar.kamcorddiscover;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -23,12 +25,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.bitmap;
 import static android.content.ContentValues.TAG;
 
 /**
@@ -40,9 +44,11 @@ import static android.content.ContentValues.TAG;
 public class ShotFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener;
-    private JSONObject jsonResult;
+//    private JSONObject jsonResult;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private List<Shot> shots;
+    private MyShotRecyclerViewAdapter mAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -77,6 +83,9 @@ public class ShotFragment extends Fragment {
             progressBar = (ProgressBar) linearLayout.findViewById(R.id.progress_bar);
             final int mColumnCount = getResources().getInteger(R.integer.shot_columns);
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            shots = new ArrayList<Shot>();
+            mAdapter = new MyShotRecyclerViewAdapter(shots, mListener);
+            recyclerView.setAdapter(mAdapter);
             new RestTask().execute("https://api.kamcord.com/v1/feed/ZmVlZElkPWZlZWRfZmVhdHVyZWRfc2hvdCZ1c2VySWQmdG9waWNJZCZzdHJlYW1TZXNzaW9uSWQmbGFuZ3VhZ2VDb2Rl?count=20&page=00.FEATURED_SHOTS.subfeed_featured_shots.00.00");
         }
         return view;
@@ -130,7 +139,50 @@ public class ShotFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             //Here you are done with the task
-            new ImagesTask().execute(result);
+
+            try {
+                JSONObject jsonResult = new JSONObject(result);
+                JSONArray cards = jsonResult.getJSONArray("cards");
+                for (int i = 0; i < cards.length(); i++) {
+
+                    JSONObject card = (JSONObject) cards.get(i);
+                    JSONObject shotCardData = card.getJSONObject("shotCardData");
+
+                    String id = shotCardData.getString("id");
+
+                    JSONObject play = shotCardData.getJSONObject("play");
+                    String playurl = play.getString("mp4");
+                    boolean isVideo = true;
+                    if(playurl.equals("https://media.kamcord.com/content/MOvyVys8kAi/MOvyVys8kAi.mp4")){
+                        isVideo =false;
+                    }
+
+                    JSONObject shotThumbnail = shotCardData.getJSONObject("shotThumbnail");
+                    String thumburl = shotThumbnail.getString("small");
+                    thumburl = thumburl.replaceAll("MOvyVys8kAi",shotCardData.getString("id"));
+
+                    String viewCount = shotCardData.getString("viewCount");
+                    String heartCount = shotCardData.getString("heartCount");
+                    String username = shotCardData.getString("username");
+
+                    Shot s = new Shot(id, playurl, viewCount, heartCount, username, thumburl, isVideo);
+
+                    shots.add(s);
+                    Log.d(TAG, "JSON SUCCESS " + shotCardData.get("id"));
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+            catch (JSONException je){
+                Log.d(TAG, "JSON EXCEPTION " + je);
+            }
+//            catch(MalformedURLException me){
+//                Log.d(TAG, "Malformed URL EXCEPTION " + me);
+//            }
+//            catch(IOException ioe){
+//                Log.d(TAG, "IO EXCEPTION " + ioe);
+//            }
+            progressBar.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
 
     }
@@ -167,45 +219,5 @@ public class ShotFragment extends Fragment {
         }
     }
 
-    private class ImagesTask extends AsyncTask<String, Void, List<Shot>> {
 
-        @Override
-        protected List<Shot> doInBackground(String... params) {
-            //do your request in here so that you don't interrupt the UI thread
-            List<Shot> ids = new ArrayList<Shot>();
-            try {
-                jsonResult = new JSONObject(params[0]);
-                JSONArray cards = jsonResult.getJSONArray("cards");
-                for (int i = 0; i < cards.length(); i++) {
-                    JSONObject card = (JSONObject) cards.get(i);
-                    JSONObject shotCardData = card.getJSONObject("shotCardData");
-                    JSONObject shotThumbnail = shotCardData.getJSONObject("shotThumbnail");
-                    String actualAddress =shotThumbnail.getString("small");
-                    actualAddress = actualAddress.replaceAll("MOvyVys8kAi",shotCardData.getString("id"));
-                    URL url = new URL(actualAddress);
-                    Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    JSONObject play = shotCardData.getJSONObject("play");
-                    ids.add(new Shot((String) shotCardData.get("id"), bmp, play.getString("mp4")));
-                    Log.d(TAG, "JSON SUCCESS " + shotCardData.get("id"));
-                }
-            }
-            catch (JSONException je){
-                Log.d(TAG, "JSON EXCEPTION " + je);
-            }
-            catch(MalformedURLException me){
-                Log.d(TAG, "Malformed URL EXCEPTION " + me);
-            }
-            catch(IOException ioe){
-                Log.d(TAG, "IO EXCEPTION " + ioe);
-            }
-            return ids;
-        }
-
-        @Override
-        protected void onPostExecute(List<Shot> result) {
-            recyclerView.setAdapter(new MyShotRecyclerViewAdapter(result, mListener));
-            recyclerView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-        }
-    }
 }

@@ -14,7 +14,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements ShotFragment.OnListFragmentInteractionListener {
 
-    public static final String EXTRA_MESSAGE = "com.yashketkar.kamcorddiscover.MESSAGE";
+    public static final String EXTRA_URL = "com.yashketkar.kamcorddiscover.URL";
+    public static final String EXTRA_ISVIDEO = "com.yashketkar.kamcorddiscover.ISVIDEO";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +60,11 @@ public class MainActivity extends AppCompatActivity implements ShotFragment.OnLi
     public void onListFragmentInteraction(Shot item) {
         Toast.makeText(MainActivity.this, item.playurl, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, VideoActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, item.playurl);
+        intent.putExtra(EXTRA_URL, item.playurl);
+        intent.putExtra(EXTRA_ISVIDEO, item.isVideo);
         startActivity(intent);
     }
+
 
 
 }

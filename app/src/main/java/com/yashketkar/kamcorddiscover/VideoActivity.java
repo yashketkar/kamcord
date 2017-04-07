@@ -2,14 +2,11 @@ package com.yashketkar.kamcorddiscover;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.MediaController;
+import android.widget.ImageView;
 import android.widget.VideoView;
-
-import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 
 public class VideoActivity extends AppCompatActivity {
 
@@ -18,21 +15,32 @@ public class VideoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
         // Get the Intent that started this activity and extract the string
+        VideoView mVideoView = (VideoView) findViewById(R.id.video_view);
+        ImageView mImageView = (ImageView) findViewById(R.id.shot_image);
+
         Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        Uri uri = Uri.parse(message); //Declare your url here.
-        VideoView mVideoView  = (VideoView)findViewById(R.id.video_view);
-        mVideoView.setMediaController(new MediaController(this));
-        mVideoView.setVideoURI(uri);
-        mVideoView.requestFocus();
-        mVideoView.start();
+        boolean isVideo = intent.getBooleanExtra(MainActivity.EXTRA_ISVIDEO, false);
+
+        if(isVideo) {
+            String message = intent.getStringExtra(MainActivity.EXTRA_URL);
+            Uri uri = Uri.parse(message); //Declare your url here.
+//        mVideoView.setMediaController(new MediaController(this));
+            mVideoView.setMediaController(null);
+            mVideoView.setVideoURI(uri);
+            mVideoView.requestFocus();
+            mVideoView.start();
+        }
+        else{
+            mVideoView.setVisibility(View.GONE);
+            mImageView.setVisibility(View.VISIBLE);
+        }
 //        hideSystemUI();
     }
 
     // This snippet hides the system bars.
     private void hideSystemUI() {
         // Set the IMMERSIVE flag.
-        // Set the content to appear under the system bars so that the content
+        // Set the thumb to appear under the system bars so that the thumb
         // doesn't resize when the system bars hide and show.
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
