@@ -1,11 +1,13 @@
 package com.yashketkar.kamcorddiscover;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +15,21 @@ import android.view.ViewGroup;
 import com.yashketkar.kamcorddiscover.dummy.DummyContent;
 import com.yashketkar.kamcorddiscover.dummy.DummyContent.DummyItem;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A fragment representing a list of Items.
@@ -28,6 +44,8 @@ public class ShotFragment extends Fragment {
     // TODO: Customize parameters
 //    private int mColumnCount = 3;
     private OnListFragmentInteractionListener mListener;
+    private JSONObject jsonResult;
+    private RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -63,15 +81,16 @@ public class ShotFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             final int mColumnCount = getResources().getInteger(R.integer.shot_columns);
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            new RestTask().execute("https://api.kamcord.com/v1/feed/ZmVlZElkPWZlZWRfZmVhdHVyZWRfc2hvdCZ1c2VySWQmdG9waWNJZCZzdHJlYW1TZXNzaW9uSWQmbGFuZ3VhZ2VDb2Rl?count=20&page=00.FEATURED_SHOTS.subfeed_featured_shots.00.00");
 //            if (mColumnCount <= 1) {
 //                recyclerView.setLayoutManager(new LinearLayoutManager(context));
 //            } else {
 //                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
 //            }
-            recyclerView.setAdapter(new MyShotRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            //recyclerView.setAdapter(new MyShotRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }
         return view;
     }
@@ -107,5 +126,95 @@ public class ShotFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
+    }
+
+
+    private class RestTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            // start loading animation maybe?
+            //adapter.clear(); // clear "old" entries (optional)
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            //do your request in here so that you don't interrupt the UI thread
+            try {
+                return downloadContent(params[0]);
+            } catch (IOException e) {
+                return "Unable to retrieve data. URL may be invalid.";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            //Here you are done with the task
+//            Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
+            recyclerView.setAdapter(new MyShotRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            try {
+                jsonResult = new JSONObject(result);
+                JSONArray cards = jsonResult.getJSONArray("cards");
+                for(int i=0;i<cards.length();i++) {
+                    JSONObject card = (JSONObject) cards.get(i);
+                    JSONObject shotCardData = (JSONObject) card.getJSONObject("shotCardData");
+                    Log.d(TAG, "JSON SUCCESS " + shotCardData.get("id"));
+                }
+            }
+            catch (JSONException je){
+                Log.d(TAG, "JSON EXCEPTION " + je);
+            }
+        }
+
+    }
+
+    private String downloadContent(String myurl) throws IOException {
+        InputStream is = null;
+        int length = 500;
+
+        try {
+            URL url = new URL(myurl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("accept-language", "en-US");
+            conn.setRequestProperty("device-token", "abc123");
+            conn.setRequestProperty("client-name", "android");
+            conn.setDoInput(true);
+            conn.connect();
+            int response = conn.getResponseCode();
+            Log.d(TAG, "The response is: " + response);
+            String message = conn.getResponseMessage();
+
+            is = conn.getInputStream();
+            length = conn.getHeaderFieldInt("content-Length",100);
+
+            //InputStream in = address.openStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            StringBuilder result = new StringBuilder();
+            String line;
+            while((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+//            System.out.println(result.toString());
+
+            // Convert the InputStream into a string
+            String contentAsString = convertInputStreamToString(is, length);
+            return result.toString();
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+    }
+
+    public String convertInputStreamToString(InputStream stream, int length) throws IOException, UnsupportedEncodingException {
+        Reader reader = null;
+        reader = new InputStreamReader(stream, "UTF-8");
+        char[] buffer = new char[length];
+        reader.read(buffer);
+        return new String(buffer);
     }
 }
