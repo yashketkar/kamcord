@@ -83,6 +83,13 @@ public class ShotFragment extends Fragment {
             progressBar = (ProgressBar) linearLayout.findViewById(R.id.progress_bar);
             final int mColumnCount = getResources().getInteger(R.integer.shot_columns);
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+
+            // Recycler View Scrolling Performance Fix
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setItemViewCacheSize(20);
+            recyclerView.setDrawingCacheEnabled(true);
+            recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
             shots = new ArrayList<Shot>();
             mAdapter = new MyShotRecyclerViewAdapter(shots, mListener);
             recyclerView.setAdapter(mAdapter);
