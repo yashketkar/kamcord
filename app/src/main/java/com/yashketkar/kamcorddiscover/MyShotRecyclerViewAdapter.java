@@ -44,16 +44,11 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-//        if(mValues.get(position).isVideo) {
             if (mValues.get(position).thumb != null) {
                 holder.mThumbView.setImageBitmap(mValues.get(position).thumb);
             } else {
                 new ImagesTask(holder.mThumbView).execute(mValues.get(position));
             }
-//        }
-//        else{
-//
-//        }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,49 +82,5 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
             return (super.toString() + " '" /*+mIdView.getText()*/ + "'");
         }
 
-    }
-
-    private class ImagesTask extends AsyncTask<Shot, Void, Bitmap> {
-
-        private final WeakReference<ImageView> imageViewReference;
-
-        private ImagesTask(ImageView imv) {
-            imageViewReference = new WeakReference<ImageView>(imv);
-        }
-
-        @Override
-        protected Bitmap doInBackground(Shot... params) {
-            //do your request in here so that you don't interrupt the UI thread
-            Bitmap bmp = null;
-            try {
-                URL url = new URL(params[0].thumburl);
-                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            }
-            catch(MalformedURLException me){
-                Log.d(TAG, "Malformed URL EXCEPTION " + me);
-            }
-            catch(IOException ioe){
-                Log.d(TAG, "IO EXCEPTION " + ioe);
-            }
-            return bmp;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-
-            if (imageViewReference != null) {
-                ImageView imageView = imageViewReference.get();
-                if (imageView != null) {
-                    if (bitmap != null) {
-                        imageView.setImageBitmap(bitmap);
-                    } else {
-//                        Drawable placeholder = imageView.getContext().getResources().getDrawable(R.drawable.ic_launcher);
-//                        imageView.setImageDrawable(placeholder);
-                    }
-                }
-            }
-
-
-        }
     }
 }
