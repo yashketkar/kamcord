@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 public class VideoActivity extends AppCompatActivity {
@@ -20,10 +21,16 @@ public class VideoActivity extends AppCompatActivity {
         VideoView mVideoView = (VideoView) findViewById(R.id.video_view);
         ImageView mImageView = (ImageView) findViewById(R.id.shot_image);
         ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.video_progress_bar);
+        TextView mTextView = (TextView) findViewById(R.id.video_meta_text);
 
         Intent intent = getIntent();
         boolean isVideo = intent.getBooleanExtra(MainActivity.EXTRA_ISVIDEO, false);
         String playurl = intent.getStringExtra(MainActivity.EXTRA_URL);
+        String heartsCount = intent.getStringExtra(MainActivity.EXTRA_HC);
+        String viewsCount = intent.getStringExtra(MainActivity.EXTRA_VC);
+        String metaText = MyShotRecyclerViewAdapter.getEmojiByUnicode(MyShotRecyclerViewAdapter.heartEmoji) + "\n" + heartsCount + "\n"+ MyShotRecyclerViewAdapter.getEmojiByUnicode(MyShotRecyclerViewAdapter.eyesEmoji) +"\n" +viewsCount;
+
+        mTextView.setText(metaText);
 
         if (isVideo) {
             Uri uri = Uri.parse(playurl);

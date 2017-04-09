@@ -1,24 +1,15 @@
 package com.yashketkar.kamcorddiscover;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.yashketkar.kamcorddiscover.ShotFragment.OnListFragmentInteractionListener;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Shot} and makes a call to the
@@ -28,6 +19,8 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
 
     private final List<Shot> mValues;
     private final OnListFragmentInteractionListener mListener;
+    public final static int heartEmoji = 0x2764;
+    public final static int eyesEmoji = 0x1F440;
 
     public MyShotRecyclerViewAdapter(List<Shot> items, OnListFragmentInteractionListener listener) {
         mValues = items;
@@ -44,11 +37,13 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-            if (mValues.get(position).thumb != null) {
-                holder.mThumbView.setImageBitmap(mValues.get(position).thumb);
-            } else {
-                new ImagesTask(holder.mThumbView).execute(mValues.get(position).thumburl);
-            }
+        String metaText = getEmojiByUnicode(heartEmoji) + ": " + mValues.get(position).heartCount + " " + getEmojiByUnicode(eyesEmoji) + ": " + mValues.get(position).viewCount;
+        holder.mTextView.setText(metaText);
+        if (mValues.get(position).thumb != null) {
+            holder.mThumbView.setImageBitmap(mValues.get(position).thumb);
+        } else {
+            new ImagesTask(holder.mThumbView).execute(mValues.get(position).thumburl);
+        }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,21 +61,21 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
         return mValues.size();
     }
 
+    public static String getEmojiByUnicode(int unicode) {
+        return new String(Character.toChars(unicode));
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final ImageView mThumbView;
+        public final TextView mTextView;
         public Shot mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mThumbView = (ImageView) view.findViewById(R.id.thumb_image);
+            mTextView = (TextView) view.findViewById(R.id.meta_text);
         }
-
-        @Override
-        public String toString() {
-            return (super.toString() + " '" /*+mIdView.getText()*/ + "'");
-        }
-
     }
 }

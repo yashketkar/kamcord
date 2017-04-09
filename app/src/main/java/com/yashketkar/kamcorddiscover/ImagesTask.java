@@ -22,7 +22,7 @@ public class ImagesTask extends AsyncTask<String, Void, Bitmap> {
     private final WeakReference<ImageView> imageViewReference;
 
     public ImagesTask(ImageView imv) {
-        imageViewReference = new WeakReference<ImageView>(imv);
+        imageViewReference = new WeakReference<>(imv);
     }
 
     @Override
@@ -32,11 +32,9 @@ public class ImagesTask extends AsyncTask<String, Void, Bitmap> {
         try {
             URL url = new URL(params[0]);
             bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-        }
-        catch(MalformedURLException me){
+        } catch (MalformedURLException me) {
             Log.d(TAG, "Malformed URL EXCEPTION " + me);
-        }
-        catch(IOException ioe){
+        } catch (IOException ioe) {
             Log.d(TAG, "IO EXCEPTION " + ioe);
         }
         return bmp;
@@ -44,13 +42,10 @@ public class ImagesTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-
-        if (imageViewReference != null) {
-            ImageView imageView = imageViewReference.get();
-            if (imageView != null) {
-                if (bitmap != null) {
-                    imageView.setImageBitmap(bitmap);
-                }
+        ImageView imageView = imageViewReference.get();
+        if (imageView != null) {
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
             }
         }
     }
