@@ -47,7 +47,7 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
             if (mValues.get(position).thumb != null) {
                 holder.mThumbView.setImageBitmap(mValues.get(position).thumb);
             } else {
-                new ImagesTask(holder.mThumbView).execute(mValues.get(position));
+                new ImagesTask(holder.mThumbView).execute(mValues.get(position).thumburl);
             }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

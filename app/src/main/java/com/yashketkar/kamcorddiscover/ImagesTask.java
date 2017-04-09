@@ -17,7 +17,7 @@ import static android.content.ContentValues.TAG;
  * Created by yashketkar on 4/8/17.
  */
 
-public class ImagesTask extends AsyncTask<Shot, Void, Bitmap> {
+public class ImagesTask extends AsyncTask<String, Void, Bitmap> {
 
     private final WeakReference<ImageView> imageViewReference;
 
@@ -26,11 +26,11 @@ public class ImagesTask extends AsyncTask<Shot, Void, Bitmap> {
     }
 
     @Override
-    protected Bitmap doInBackground(Shot... params) {
+    protected Bitmap doInBackground(String... params) {
         //do your request in here so that you don't interrupt the UI thread
         Bitmap bmp = null;
         try {
-            URL url = new URL(params[0].thumburl);
+            URL url = new URL(params[0]);
             bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
         }
         catch(MalformedURLException me){

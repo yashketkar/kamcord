@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.VideoView;
 
 public class VideoActivity extends AppCompatActivity {
@@ -18,19 +19,23 @@ public class VideoActivity extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         VideoView mVideoView = (VideoView) findViewById(R.id.video_view);
         ImageView mImageView = (ImageView) findViewById(R.id.shot_image);
+        ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.video_progress_bar);
 
         Intent intent = getIntent();
         boolean isVideo = intent.getBooleanExtra(MainActivity.EXTRA_ISVIDEO, false);
+        String playurl = intent.getStringExtra(MainActivity.EXTRA_URL);
 
         if (isVideo) {
-            String message = intent.getStringExtra(MainActivity.EXTRA_URL);
-            Uri uri = Uri.parse(message);
+            Uri uri = Uri.parse(playurl);
             mVideoView.setMediaController(null);
             mVideoView.setVideoURI(uri);
             mVideoView.requestFocus();
+            mProgressBar.setVisibility(View.GONE);
+            mVideoView.setVisibility(View.VISIBLE);
             mVideoView.start();
         } else {
-            mVideoView.setVisibility(View.GONE);
+            new ImagesTask(mImageView).execute(playurl);
+            mProgressBar.setVisibility(View.GONE);
             mImageView.setVisibility(View.VISIBLE);
         }
         hideSystemUI();

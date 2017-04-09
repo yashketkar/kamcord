@@ -157,16 +157,19 @@ public class ShotFragment extends Fragment {
 
                     String id = shotCardData.getString("id");
 
-                    JSONObject play = shotCardData.getJSONObject("play");
-                    String playurl = play.getString("mp4");
-                    boolean isVideo = true;
-                    if(playurl.equals("https://media.kamcord.com/content/MOvyVys8kAi/MOvyVys8kAi.mp4")){
-                        isVideo =false;
-                    }
-
                     JSONObject shotThumbnail = shotCardData.getJSONObject("shotThumbnail");
                     String thumburl = shotThumbnail.getString("small");
                     thumburl = thumburl.replaceAll("MOvyVys8kAi",shotCardData.getString("id"));
+
+                    JSONObject play = shotCardData.getJSONObject("play");
+                    String playurl = play.getString("mp4");
+
+                    boolean isVideo = true;
+                    if(playurl.equals("https://media.kamcord.com/content/MOvyVys8kAi/MOvyVys8kAi.mp4")){
+                        isVideo = false;
+                        playurl = shotThumbnail.getString("large");
+                        playurl = playurl.replaceAll("MOvyVys8kAi",shotCardData.getString("id"));
+                    }
 
                     String viewCount = shotCardData.getString("viewCount");
                     String heartCount = shotCardData.getString("heartCount");
