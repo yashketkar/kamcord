@@ -20,9 +20,15 @@ import static android.content.ContentValues.TAG;
 public class ImagesTask extends AsyncTask<String, Void, Bitmap> {
 
     private final WeakReference<ImageView> imageViewReference;
+    private Shot s;
 
     public ImagesTask(ImageView imv) {
         imageViewReference = new WeakReference<>(imv);
+    }
+
+    public ImagesTask(ImageView imv, Shot s) {
+        imageViewReference = new WeakReference<>(imv);
+        this.s = s;
     }
 
     @Override
@@ -42,6 +48,9 @@ public class ImagesTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
+        if(s!=null){
+            s.thumb = bitmap;
+        }
         ImageView imageView = imageViewReference.get();
         if (imageView != null) {
             if (bitmap != null) {

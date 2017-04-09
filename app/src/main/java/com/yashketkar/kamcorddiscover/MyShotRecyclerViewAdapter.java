@@ -1,6 +1,7 @@
 package com.yashketkar.kamcorddiscover;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import com.yashketkar.kamcorddiscover.ShotFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Shot} and makes a call to the
@@ -41,12 +44,11 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        String metaText = getEmojiByUnicode(heartEmoji) + " " + mValues.get(position).heartCount + " " + getEmojiByUnicode(eyesEmoji) + " " + mValues.get(position).viewCount;
-        holder.mTextView.setText(metaText);
-        if (mValues.get(position).thumb != null) {
-            holder.mThumbView.setImageBitmap(mValues.get(position).thumb);
+        holder.mTextView.setText(getEmojiByUnicode(heartEmoji) + " " + holder.mItem.heartCount + " " + getEmojiByUnicode(eyesEmoji) + " " + holder.mItem.viewCount);
+        if (holder.mItem.thumb != null) {
+            holder.mThumbView.setImageBitmap(holder.mItem.thumb);
         } else {
-            new ImagesTask(holder.mThumbView).execute(mValues.get(position).thumburl);
+            new ImagesTask(holder.mThumbView, holder.mItem).execute(holder.mItem.thumburl);
         }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
