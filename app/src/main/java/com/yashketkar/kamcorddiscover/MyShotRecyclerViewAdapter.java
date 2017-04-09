@@ -17,14 +17,18 @@ import java.util.List;
  */
 public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Shot> mValues;
-    private final OnListFragmentInteractionListener mListener;
     public final static int heartEmoji = 0x2764;
     public final static int eyesEmoji = 0x1F440;
+    private final List<Shot> mValues;
+    private final OnListFragmentInteractionListener mListener;
 
     public MyShotRecyclerViewAdapter(List<Shot> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
+    }
+
+    public static String getEmojiByUnicode(int unicode) {
+        return new String(Character.toChars(unicode));
     }
 
     @Override
@@ -37,7 +41,7 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        String metaText = getEmojiByUnicode(heartEmoji) + ": " + mValues.get(position).heartCount + " " + getEmojiByUnicode(eyesEmoji) + ": " + mValues.get(position).viewCount;
+        String metaText = getEmojiByUnicode(heartEmoji) + " " + mValues.get(position).heartCount + " " + getEmojiByUnicode(eyesEmoji) + " " + mValues.get(position).viewCount;
         holder.mTextView.setText(metaText);
         if (mValues.get(position).thumb != null) {
             holder.mThumbView.setImageBitmap(mValues.get(position).thumb);
@@ -59,10 +63,6 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
     @Override
     public int getItemCount() {
         return mValues.size();
-    }
-
-    public static String getEmojiByUnicode(int unicode) {
-        return new String(Character.toChars(unicode));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
