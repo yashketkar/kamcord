@@ -45,6 +45,7 @@ public class MyShotRecyclerViewAdapter extends RecyclerView.Adapter<MyShotRecycl
         if (holder.mItem.thumb != null) {
             holder.mThumbView.setImageBitmap(holder.mItem.thumb);
         } else {
+            holder.mThumbView.setImageResource(R.drawable.shot);
             new ImagesTask(holder.mThumbView, holder.mItem).execute(holder.mItem.thumburl);
         }
         holder.mView.setOnClickListener(new View.OnClickListener() {
