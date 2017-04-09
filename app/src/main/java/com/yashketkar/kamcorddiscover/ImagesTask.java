@@ -11,10 +11,9 @@ import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static android.content.ContentValues.TAG;
-
 /**
- * Created by yashketkar on 4/8/17.
+ * Created by yashketkar on 4/9/17.
+ * This is used for loading of thumbnails and other images asynchronously.
  */
 
 public class ImagesTask extends AsyncTask<String, Void, Bitmap> {
@@ -39,9 +38,9 @@ public class ImagesTask extends AsyncTask<String, Void, Bitmap> {
             URL url = new URL(params[0]);
             bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
         } catch (MalformedURLException me) {
-            Log.d(TAG, "Malformed URL EXCEPTION " + me);
+            Log.d(ShotFragment.TAG, "Malformed URL EXCEPTION " + me);
         } catch (IOException ioe) {
-            Log.d(TAG, "IO EXCEPTION " + ioe);
+            Log.d(ShotFragment.TAG, "IO EXCEPTION " + ioe);
         }
         return bmp;
     }

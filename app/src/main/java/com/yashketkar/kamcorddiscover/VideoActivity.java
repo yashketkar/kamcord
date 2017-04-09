@@ -11,6 +11,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+/**
+ * Created by yashketkar on 4/9/17.
+ * This is the Video Activity used to play videos or display images.
+ */
+
 public class VideoActivity extends AppCompatActivity {
 
     @Override
@@ -28,7 +33,7 @@ public class VideoActivity extends AppCompatActivity {
         String playurl = intent.getStringExtra(MainActivity.EXTRA_URL);
         String heartsCount = intent.getStringExtra(MainActivity.EXTRA_HC);
         String viewsCount = intent.getStringExtra(MainActivity.EXTRA_VC);
-        String metaText = MyShotRecyclerViewAdapter.getEmojiByUnicode(MyShotRecyclerViewAdapter.heartEmoji) + "\n" + heartsCount + "\n"+ MyShotRecyclerViewAdapter.getEmojiByUnicode(MyShotRecyclerViewAdapter.eyesEmoji) +"\n" +viewsCount;
+        String metaText = MyShotRecyclerViewAdapter.getEmojiByUnicode(MyShotRecyclerViewAdapter.heartEmoji) + "\n" + heartsCount + "\n" + MyShotRecyclerViewAdapter.getEmojiByUnicode(MyShotRecyclerViewAdapter.eyesEmoji) + "\n" + viewsCount;
 
         mTextView.setText(metaText);
 

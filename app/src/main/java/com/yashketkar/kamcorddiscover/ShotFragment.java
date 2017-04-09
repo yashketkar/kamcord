@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +35,7 @@ import java.util.List;
 
 public class ShotFragment extends Fragment {
 
-    private static String TAG = "com.yashketkar";
+    public static String TAG = "com.yashketkar";
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -88,7 +87,6 @@ public class ShotFragment extends Fragment {
 
             shots = new ArrayList<>();
             mAdapter = new MyShotRecyclerViewAdapter(shots, mListener);
-//            mAdapter.setHasStableIds(true);
             recyclerView.setAdapter(mAdapter);
 
             scrollListener = new EndlessRecyclerViewScrollListener(gm) {
@@ -115,7 +113,7 @@ public class ShotFragment extends Fragment {
         //  --> Deserialize and construct new model objects from the API response
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
-        new RestTask().execute("https://api.kamcord.com/v1/feed/ZmVlZElkPWZlZWRfZmVhdHVyZWRfc2hvdCZ1c2VySWQmdG9waWNJZCZzdHJlYW1TZXNzaW9uSWQmbGFuZ3VhZ2VDb2Rl?count=20&page="+offset+".FEATURED_SHOTS.subfeed_featured_shots."+offset+"."+offset);
+        new RestTask().execute("https://api.kamcord.com/v1/feed/ZmVlZElkPWZlZWRfZmVhdHVyZWRfc2hvdCZ1c2VySWQmdG9waWNJZCZzdHJlYW1TZXNzaW9uSWQmbGFuZ3VhZ2VDb2Rl?count=20&page=" + offset + ".FEATURED_SHOTS.subfeed_featured_shots." + offset + "." + offset);
     }
 
     @Override

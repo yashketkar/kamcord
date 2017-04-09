@@ -5,6 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+/**
+ * Created by yashketkar on 4/9/17.
+ * This is the Main or the Launcher Activity.
+ */
+
 public class MainActivity extends AppCompatActivity implements ShotFragment.OnListFragmentInteractionListener {
 
     public static final String EXTRA_URL = "com.yashketkar.kamcorddiscover.URL";

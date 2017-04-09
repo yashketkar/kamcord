@@ -3,8 +3,8 @@ package com.yashketkar.kamcorddiscover;
 import android.graphics.Bitmap;
 
 /**
- * Created by yashketkar on 4/6/17.
- *
+ * Created by yashketkar on 4/9/17.
+ * This is the model class for a Screenshot.
  */
 
 public class Shot {
@@ -17,12 +17,6 @@ public class Shot {
     public final String thumburl;
     public Bitmap thumb;
     public boolean isVideo;
-
-//    public Shot(String id, Bitmap thumb, String playurl) {
-//        this.id = id;
-//        this.thumb = thumb;
-//        this.playurl = playurl;
-//    }
 
     public Shot(String id, String playurl, String viewCount, String heartCount, String username, String thumburl, boolean isVideo) {
         this.id = id;

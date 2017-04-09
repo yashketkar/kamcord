@@ -25,8 +25,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             card_view:cardCornerRadius="4dp"
-            card_view:cardUseCompatPadding="true"
-            card_view:cardElevation="4dp">
+            card_view:cardElevation="4dp"
+            card_view:cardUseCompatPadding="true">
 
             <TextView
                 android:id="@+id/meta_text"
