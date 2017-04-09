@@ -47,7 +47,7 @@ public class ImagesTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        if(s!=null){
+        if (s != null) {
             s.thumb = bitmap;
         }
         ImageView imageView = imageViewReference.get();
