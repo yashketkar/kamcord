@@ -3,4 +3,5 @@
     <string name="thumb_description">Shot Thumbnail</string>
     <string name="shot_description">Shot Image</string>
     <string name="action_settings">Settings</string>
+    <string name="no_data_available">No Data Available</string>
 </resources>

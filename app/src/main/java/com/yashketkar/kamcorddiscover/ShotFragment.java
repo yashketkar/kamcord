@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +40,7 @@ public class ShotFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private TextView textView;
     private List<Shot> shots;
     private MyShotRecyclerViewAdapter mAdapter;
     // Store a member variable for the listener
@@ -75,6 +77,7 @@ public class ShotFragment extends Fragment {
             LinearLayout linearLayout = (LinearLayout) view;
             recyclerView = (RecyclerView) linearLayout.findViewById(R.id.recycler_view);
             progressBar = (ProgressBar) linearLayout.findViewById(R.id.progress_bar);
+            textView = (TextView) linearLayout.findViewById(R.id.empty_view);
             final int mColumnCount = getResources().getInteger(R.integer.shot_columns);
             GridLayoutManager gm = new GridLayoutManager(context, mColumnCount);
             recyclerView.setLayoutManager(gm);
@@ -188,51 +191,57 @@ public class ShotFragment extends Fragment {
             try {
                 return downloadContent(params[0]);
             } catch (IOException e) {
-                return "Unable to retrieve data. URL may be invalid.";
+                return "fail";
             }
         }
 
         @Override
         protected void onPostExecute(String result) {
             //Here you are done with the task
-            try {
-                JSONObject jsonResult = new JSONObject(result);
-                JSONArray cards = jsonResult.getJSONArray("cards");
-                for (int i = 0; i < cards.length(); i++) {
+            if (result.equals("fail")) {
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+                textView.setVisibility(View.VISIBLE);
+            } else {
+                try {
+                    JSONObject jsonResult = new JSONObject(result);
+                    JSONArray cards = jsonResult.getJSONArray("cards");
+                    for (int i = 0; i < cards.length(); i++) {
 
-                    JSONObject card = (JSONObject) cards.get(i);
-                    JSONObject shotCardData = card.getJSONObject("shotCardData");
+                        JSONObject card = (JSONObject) cards.get(i);
+                        JSONObject shotCardData = card.getJSONObject("shotCardData");
 
-                    String id = shotCardData.getString("id");
+                        String id = shotCardData.getString("id");
 
-                    JSONObject shotThumbnail = shotCardData.getJSONObject("shotThumbnail");
-                    String thumburl = shotThumbnail.getString("small");
-                    thumburl = thumburl.replaceAll("MOvyVys8kAi", shotCardData.getString("id"));
+                        JSONObject shotThumbnail = shotCardData.getJSONObject("shotThumbnail");
+                        String thumburl = shotThumbnail.getString("small");
+                        thumburl = thumburl.replaceAll("MOvyVys8kAi", shotCardData.getString("id"));
 
-                    JSONObject play = shotCardData.getJSONObject("play");
-                    String playurl = play.getString("mp4");
+                        JSONObject play = shotCardData.getJSONObject("play");
+                        String playurl = play.getString("mp4");
 
-                    boolean isVideo = true;
-                    if (playurl.equals("https://media.kamcord.com/content/MOvyVys8kAi/MOvyVys8kAi.mp4")) {
-                        isVideo = false;
-                        playurl = shotThumbnail.getString("large");
-                        playurl = playurl.replaceAll("MOvyVys8kAi", shotCardData.getString("id"));
+                        boolean isVideo = true;
+                        if (playurl.equals("https://media.kamcord.com/content/MOvyVys8kAi/MOvyVys8kAi.mp4")) {
+                            isVideo = false;
+                            playurl = shotThumbnail.getString("large");
+                            playurl = playurl.replaceAll("MOvyVys8kAi", shotCardData.getString("id"));
+                        }
+                        String viewCount = shotCardData.getString("viewCount");
+                        String heartCount = shotCardData.getString("heartCount");
+                        String username = shotCardData.getString("username");
+
+                        Shot s = new Shot(id, playurl, viewCount, heartCount, username, thumburl, isVideo);
+
+                        shots.add(s);
+                        mAdapter.notifyItemInserted(shots.size() - 1);
+                        Log.d(TAG, "JSON SUCCESS " + shotCardData.get("id"));
                     }
-                    String viewCount = shotCardData.getString("viewCount");
-                    String heartCount = shotCardData.getString("heartCount");
-                    String username = shotCardData.getString("username");
-
-                    Shot s = new Shot(id, playurl, viewCount, heartCount, username, thumburl, isVideo);
-
-                    shots.add(s);
-                    mAdapter.notifyItemInserted(shots.size() - 1);
-                    Log.d(TAG, "JSON SUCCESS " + shotCardData.get("id"));
+                } catch (JSONException je) {
+                    Log.d(TAG, "JSON EXCEPTION " + je);
                 }
-            } catch (JSONException je) {
-                Log.d(TAG, "JSON EXCEPTION " + je);
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
             }
-            progressBar.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 }

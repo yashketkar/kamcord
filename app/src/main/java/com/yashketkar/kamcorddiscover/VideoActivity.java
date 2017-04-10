@@ -1,6 +1,7 @@
 package com.yashketkar.kamcorddiscover;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -23,9 +24,9 @@ public class VideoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
         // Get the Intent that started this activity and extract the string
-        VideoView mVideoView = (VideoView) findViewById(R.id.video_view);
-        ImageView mImageView = (ImageView) findViewById(R.id.shot_image);
-        ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.video_progress_bar);
+        final VideoView mVideoView = (VideoView) findViewById(R.id.video_view);
+        final ImageView mImageView = (ImageView) findViewById(R.id.shot_image);
+        final ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.video_progress_bar);
         TextView mTextView = (TextView) findViewById(R.id.video_meta_text);
 
         Intent intent = getIntent();
@@ -42,9 +43,14 @@ public class VideoActivity extends AppCompatActivity {
             mVideoView.setMediaController(null);
             mVideoView.setVideoURI(uri);
             mVideoView.requestFocus();
-            mProgressBar.setVisibility(View.GONE);
             mVideoView.setVisibility(View.VISIBLE);
-            mVideoView.start();
+            mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                public void onPrepared(MediaPlayer mp) {
+                    mProgressBar.setVisibility(View.GONE);
+                    mVideoView.requestFocus();
+                    mVideoView.start();
+                }
+            });
         } else {
             new ImagesTask(mImageView).execute(playurl);
             mProgressBar.setVisibility(View.GONE);
